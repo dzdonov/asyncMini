@@ -5,7 +5,7 @@ function doSomething(log, callback) {
     console.log(log);
     callback();
   }, 2000);
-};
+}
 
 // async.series [ Array of methods that accept callback ],
 // function() { final callback }
@@ -30,7 +30,45 @@ asyncMethods.push(function (p_callback) {
 
 async.series(asyncMethods, function() {
   console.log("All done!");
-})
+});
+
+//Parallel Example
+
+var tweets = ["1", "2", "3", "4", "5"];
+
+asyncMethods = [];
+
+function getTweet(i) {
+  var id = tweets[i];
+
+  asyncMethods.push(
+    function (callback) {
+          doSomething(id, callback);
+      }
+    );
+}
+
+for (var i = 0; i < tweets.length; i++)
+{
+  getTweet(i);
+}
+
+// Before refactoring:
+// for (var i = 0; i < tweets.length; i++)
+// {
+//     (function (i) {
+//         var id = tweets[i];
+//
+//         asyncMethods.push(
+//             function (callback) {
+//                 doSomething(id, callback);
+//             }
+//         );
+//     })(i);
+// }
+
+
+async.parallel(asyncMethods, function() { console.log("All done!"); });
 
 
 //Slow example:
